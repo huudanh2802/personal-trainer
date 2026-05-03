@@ -22,7 +22,7 @@ export type Exercise = {
   category: string;
 };
 
-const v = (name: string) => `/videos/${name}`;
+const v = (name: string) => `${import.meta.env.BASE_URL}videos/${name}`;
 
 export const workoutPlan: Exercise[] = [
   {
