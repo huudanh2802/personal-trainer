@@ -71,10 +71,10 @@ export const challengePlans: ChallengePlan[] = [
   },
   {
     id: 'dumbbell_treadmill_fatburn_30',
-    title: '30-Day Dumbbell + Treadmill Fat Burn',
-    description: 'Alternates dumbbell strength circuits with treadmill intervals for higher calorie burn.',
+    title: '30-Day Home Equipment Fat Burn',
+    description: 'Alternates dumbbell strength with pull-up bar and jump-rope intervals for higher calorie burn.',
     premium: true,
-    target: 'Burn fat with dumbbells + treadmill',
+    target: 'Burn fat with dumbbells + pull-up bar + rope',
     weeklyTemplate: [
       'active_recovery',
       'metabolic',
