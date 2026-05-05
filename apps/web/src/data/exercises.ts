@@ -246,20 +246,6 @@ export const workoutPlan: Exercise[] = [
     category: 'Metabolic',
   },
   {
-    id: '16',
-    name: 'Burpees',
-    video: v('youtube_burpee.mp4'),
-    youtubeTitle: 'How To Do A Burpee | The Right Way',
-    videoCredit: 'YouTube tutorial title: How To Do A Burpee | The Right Way',
-    videoHasSpeech: true,
-    videoLoop: true,
-    sets: 4,
-    reps: 10,
-    repGuide: '1 rep = squat down, kick feet back to plank, return feet in, and jump up.',
-    description: 'Stay rhythmic and breathe with each rep.',
-    category: 'Metabolic',
-  },
-  {
     id: '17',
     name: 'Steady State Cardio',
     video: v('youtube_zone2_cardio.mp4'),
@@ -303,16 +289,16 @@ export const workoutPlan: Exercise[] = [
   },
   {
     id: '20',
-    name: 'Jump Rope Intervals',
-    youtubeTitle: 'Beginner Jump Rope Technique and Intervals',
-    videoCredit: 'Jump rope intervals tutorial and pacing guide',
+    name: 'Treadmill Intervals',
+    youtubeTitle: 'Beginner Treadmill Interval Technique and Pacing',
+    videoCredit: 'Treadmill intervals tutorial and pacing guide',
     videoHasSpeech: true,
     videoLoop: true,
     sets: 8,
     reps: '1 min',
     repGuide:
-      '1 rep = one full minute of rope skipping at a steady rhythm. Rest 30-45 seconds between rounds and keep jumps low and light.',
-    description: 'Low-impact, high-output cardio to improve conditioning and coordination.',
+      '1 rep = one full minute at a faster treadmill pace. Rest 30-45 seconds between rounds at a light walk before the next interval.',
+    description: 'Interval treadmill work to improve conditioning and cardiovascular capacity.',
     category: 'Cardio',
   },
 ];
@@ -322,13 +308,13 @@ export const exerciseById: Record<string, Exercise> = Object.fromEntries(workout
 export const weeklySchedule: Record<number, { type: WorkoutDayType; exerciseIds: string[]; title: string }> = {
   0: { type: 'active_recovery', exerciseIds: ['18'], title: 'Sunday: Active Recovery' },
   1: { type: 'lower_core', exerciseIds: ['1', '2', '4', '5', '6'], title: 'Monday: Lower Body & Core' },
-  2: { type: 'cardio_intervals', exerciseIds: ['20', '3'], title: 'Tuesday: Jump Rope + Treadmill Intervals' },
+  2: { type: 'cardio_intervals', exerciseIds: ['20', '3'], title: 'Tuesday: Treadmill Intervals + Incline Walk' },
   3: {
     type: 'upper_strength',
     exerciseIds: ['19', '7', '8', '9', '10', '11', '12'],
     title: 'Wednesday: Pull-up + Upper Body Strength',
   },
   4: { type: 'active_recovery', exerciseIds: ['18'], title: 'Thursday: Active Recovery' },
-  5: { type: 'metabolic', exerciseIds: ['13', '14', '15', '16', '20'], title: 'Friday: Metabolic + Jump Rope Finisher' },
+  5: { type: 'metabolic', exerciseIds: ['13', '14', '15', '20'], title: 'Friday: Metabolic + Treadmill Finisher' },
   6: { type: 'steady_state', exerciseIds: ['17'], title: 'Saturday: Steady State Cardio' },
 };
