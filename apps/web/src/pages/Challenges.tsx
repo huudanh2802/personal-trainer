@@ -9,6 +9,7 @@ function todayKey(): string {
 
 export default function ChallengesPage() {
   const [state, setState] = useState<ChallengeState | null>(null);
+  const [injuryNote, setInjuryNote] = useState('');
 
   const load = useCallback(() => {
     try {
@@ -33,6 +34,7 @@ export default function ChallengesPage() {
       startedOn: todayKey(),
       currentDay: 1,
       completedDays: [],
+      skippedDays: [],
     };
     localStorage.setItem(keys.challengeState, JSON.stringify(next));
     setState(next);
@@ -43,6 +45,27 @@ export default function ChallengesPage() {
     localStorage.removeItem(keys.challengeState);
     setState(null);
     window.alert('Challenge progress was cleared.');
+  };
+
+  const skipDayForInjury = async () => {
+    if (!state) return;
+    const today = todayKey();
+    const skipped = Array.isArray(state.skippedDays) ? state.skippedDays : [];
+    if (skipped.includes(today)) {
+      window.alert('You already skipped today due to injury.');
+      return;
+    }
+    const trimmedNote = injuryNote.trim();
+    const noteEntry = trimmedNote ? `${today}: ${trimmedNote}` : today;
+    const next: ChallengeState = {
+      ...state,
+      currentDay: Math.min((state.currentDay || 1) + 1, 30),
+      skippedDays: [...skipped, noteEntry],
+    };
+    localStorage.setItem(keys.challengeState, JSON.stringify(next));
+    setState(next);
+    setInjuryNote('');
+    window.alert('Day skipped due to injury. Resume when you feel ready.');
   };
 
   const activePlan = state ? challengePlans.find((p) => p.id === state.planId) : null;
@@ -59,9 +82,31 @@ export default function ChallengesPage() {
             <h2 style={{ margin: '4px 0' }}>{activePlan.title}</h2>
             <p style={{ color: 'var(--text-muted)' }}>Day {state?.currentDay ?? 1} / 30</p>
             <p style={{ color: 'var(--text-muted)' }}>Completed days: {state?.completedDays.length ?? 0}</p>
+            <p style={{ color: 'var(--text-muted)' }}>Injury skips: {state?.skippedDays?.length ?? 0}</p>
             <Link className="btn-primary" style={{ marginTop: 12 }} to="/workout">
               Start today&apos;s challenge workout
             </Link>
+            <label style={{ marginTop: 12, display: 'block', fontSize: 13, color: 'var(--text-muted)' }}>
+              Injury note (optional)
+            </label>
+            <input
+              type="text"
+              value={injuryNote}
+              onChange={(e) => setInjuryNote(e.target.value)}
+              placeholder="e.g. knee pain, resting 48h"
+              style={{
+                width: '100%',
+                marginTop: 6,
+                padding: '10px 12px',
+                borderRadius: 10,
+                border: '1px solid var(--border)',
+                background: 'var(--surface)',
+                color: 'var(--text)',
+              }}
+            />
+            <button type="button" className="btn-secondary" style={{ marginTop: 12 }} onClick={() => void skipDayForInjury()}>
+              Skip day due to injury
+            </button>
             <button type="button" className="btn-secondary" style={{ marginTop: 12 }} onClick={() => void resetPlan()}>
               Reset challenge
             </button>

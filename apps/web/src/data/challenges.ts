@@ -16,6 +16,7 @@ export type ChallengeState = {
   startedOn: string;
   currentDay: number;
   completedDays: string[];
+  skippedDays?: string[];
 };
 
 const defaultWeek: WorkoutDayType[] = [
