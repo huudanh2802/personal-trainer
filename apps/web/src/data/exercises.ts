@@ -303,6 +303,21 @@ export const workoutPlan: Exercise[] = [
     category: 'Upper Body',
   },
   {
+    id: '22',
+    name: 'Dynamic Warm-Up',
+    video: v('youtube_dynamic_warmup.mp4'),
+    youtubeTitle: '5 Minute Dynamic Warm Up',
+    videoCredit: 'Dynamic warm-up · TIFF x DAN · youtube.com/watch?v=divaflydT7M',
+    videoHasSpeech: false,
+    videoLoop: false,
+    sets: 1,
+    reps: '5 mins',
+    repGuide:
+      'Follow the full 5-minute routine: leg swings, bear crawls, toe-touch squats, butt kicks, and shoulder mobility—move continuously with control.',
+    description: 'Low-impact full-body warm-up before every session to raise heart rate and prep joints.',
+    category: 'Warm-up',
+  },
+  {
     id: '20',
     name: 'Treadmill Intervals',
     youtubeTitle: 'Beginner Treadmill Interval Technique and Pacing',
@@ -319,6 +334,14 @@ export const workoutPlan: Exercise[] = [
 ];
 
 export const exerciseById: Record<string, Exercise> = Object.fromEntries(workoutPlan.map((item) => [item.id, item]));
+
+/** Prepended to every scheduled workout day (and challenges). */
+export const DAILY_WARMUP_EXERCISE_ID = '22';
+
+export function withDailyWarmUp(exerciseIds: string[]): string[] {
+  if (exerciseIds.includes(DAILY_WARMUP_EXERCISE_ID)) return exerciseIds;
+  return [DAILY_WARMUP_EXERCISE_ID, ...exerciseIds];
+}
 
 export const weeklySchedule: Record<number, { type: WorkoutDayType; exerciseIds: string[]; title: string }> = {
   0: { type: 'active_recovery', exerciseIds: ['18'], title: 'Sunday: Active Recovery' },

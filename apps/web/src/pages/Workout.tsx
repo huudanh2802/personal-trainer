@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Exercise } from '../data/exercises';
-import { workoutPlan, exerciseById, weeklySchedule } from '../data/exercises';
+import {
+  workoutPlan,
+  exerciseById,
+  weeklySchedule,
+  withDailyWarmUp,
+  DAILY_WARMUP_EXERCISE_ID,
+} from '../data/exercises';
 import { keys, getJson, setJson } from '../lib/storage';
 import { challengePlans, getChallengeDayType, type ChallengeState } from '../data/challenges';
 
@@ -130,7 +136,7 @@ export default function WorkoutPage() {
           const dayType = getChallengeDayType(plan, challengeDay);
           const weekMatch = Object.values(weeklySchedule).find((item) => item.type === dayType);
           if (weekMatch) {
-            const challengeExercises = weekMatch.exerciseIds
+            const challengeExercises = withDailyWarmUp(weekMatch.exerciseIds)
               .map((id) => exerciseById[id])
               .filter((x): x is Exercise => Boolean(x))
               .map((x) => scaleExercise(x, progression.level));
@@ -151,15 +157,21 @@ export default function WorkoutPage() {
         const todayAssignedId = parsed?.[todayIso];
         const assigned = todayAssignedId ? exerciseById[String(todayAssignedId)] : undefined;
         if (assigned) {
+          const warmUp = exerciseById[DAILY_WARMUP_EXERCISE_ID];
+          const customPlan: Exercise[] = [];
+          if (warmUp && assigned.id !== DAILY_WARMUP_EXERCISE_ID) {
+            customPlan.push(scaleExercise(warmUp, progression.level));
+          }
+          customPlan.push(scaleExercise(assigned, progression.level));
           setScheduleTitle('Today: Custom Assigned Exercise');
-          setActivePlan([scaleExercise(assigned, progression.level)]);
+          setActivePlan(customPlan);
           setIndex(0);
           setSetCount(1);
           return;
         }
       }
 
-      const scheduledExercises = dayInfo.exerciseIds
+      const scheduledExercises = withDailyWarmUp(dayInfo.exerciseIds)
         .map((id) => exerciseById[id])
         .filter((x): x is Exercise => Boolean(x))
         .map((x) => scaleExercise(x, progression.level));
