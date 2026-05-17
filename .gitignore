@@ -34,6 +34,13 @@ apps/mobile/web-build/
 
 # Backend
 backend/.turbo/
+backend/dotnet/**/bin/
+backend/dotnet/**/obj/
+backend/dotnet/**/*.db
+backend/dotnet/**/*.db-*
+
+# PostgreSQL local dumps
+*.sql.dump
 
 # Caches
 .cache/
