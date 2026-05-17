@@ -24,8 +24,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build web app
-        run: npm run web:build
+      - name: Build web app (GitHub Pages — static, no API)
+        run: npm run web:build:pages
+
+      - name: Verify asset base path
+        run: grep -q '/personal-trainer/assets/' apps/web/dist/index.html
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
