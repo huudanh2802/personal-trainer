@@ -13,7 +13,19 @@
     "mobile:ios": "npm run ios -w @personal-trainer/mobile",
     "web": "npm run dev -w @personal-trainer/web",
     "web:build": "npm run build -w @personal-trainer/web",
+    "web:build:pages": "npm run build:pages -w @personal-trainer/web",
     "backend": "npm run dev -w @personal-trainer/backend",
+    "api": "dotnet run --project backend/dotnet/PersonalTrainer.Api",
+    "api:build": "dotnet build backend/dotnet/PersonalTrainer.Api",
+    "dev": "bash scripts/dev.sh",
+    "dev:detach": "bash scripts/dev.sh --detach",
+    "dev:stop": "bash scripts/dev.sh stop",
+    "dev:logs": "bash scripts/dev.sh logs",
+    "dev:status": "bash scripts/dev.sh status",
+    "docker:up": "npm run dev",
+    "docker:down": "npm run dev:stop",
+    "docker:logs": "npm run dev:logs",
+    "docker:meal": "bash scripts/dev.sh --meal",
     "typecheck": "npm run typecheck -w @personal-trainer/mobile && npm run typecheck -w @personal-trainer/web"
   }
 }

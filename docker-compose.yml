@@ -1,0 +1,87 @@
+# Local development: PostgreSQL + .NET API + Vite web app
+# Usage: docker compose up --build
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-personal_trainer}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-personal_trainer}
+      POSTGRES_DB: ${POSTGRES_DB:-personal_trainer}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  api:
+    build:
+      context: ./backend/dotnet/PersonalTrainer.Api
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./backend/dotnet/PersonalTrainer.Api:/src:cached
+      - api-dotnet-bin:/src/bin
+      - api-dotnet-obj:/src/obj
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=${POSTGRES_DB:-personal_trainer};Username=${POSTGRES_USER:-personal_trainer};Password=${POSTGRES_PASSWORD:-personal_trainer}
+      Jwt__Key: dev-docker-jwt-secret-minimum-32-characters-long
+      Jwt__Issuer: PersonalTrainer.Api
+      Jwt__Audience: PersonalTrainer.Web
+      Jwt__ExpireHours: "12"
+      Admin__Email: admin@personal-trainer.local
+      Admin__Password: ChangeMe123!
+      Cors__Origins__0: http://localhost:5173
+      Cors__Origins__1: http://127.0.0.1:5173
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:5050/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 90s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./apps/web:/app/apps/web:cached
+      - ./package.json:/app/package.json:ro
+      - ./package-lock.json:/app/package-lock.json:ro
+    environment:
+      VITE_API_URL: http://localhost:5050
+    depends_on:
+      api:
+        condition: service_healthy
+
+  meal-api:
+    profiles: ["meal"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8787:8080"
+    environment:
+      PORT: "8080"
+      MEAL_API_KEY: dev-meal-key
+      DATA_DIR: /data
+    volumes:
+      - meal-api-data:/data
+
+volumes:
+  postgres-data:
+  api-dotnet-bin:
+  api-dotnet-obj:
+  meal-api-data:

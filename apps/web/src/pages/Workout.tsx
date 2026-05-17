@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Exercise } from '../data/exercises';
-import {
-  workoutPlan,
-  exerciseById,
-  weeklySchedule,
-  withDailyWarmUp,
-  DAILY_WARMUP_EXERCISE_ID,
-} from '../data/exercises';
+import { workoutPlan } from '../data/exercises';
+import { useWorkoutData } from '../context/WorkoutDataContext';
 import YouTubeEmbed from '../components/YouTubeEmbed';
 import { youtubeWatchUrl } from '../lib/youtube';
 import { keys, getJson, setJson } from '../lib/storage';
@@ -72,6 +67,8 @@ async function recordWorkoutDay(): Promise<void> {
 
 export default function WorkoutPage() {
   const navigate = useNavigate();
+  const { exerciseById, weeklySchedule, withDailyWarmUp, dailyWarmUpExerciseId, exercises } =
+    useWorkoutData();
   const [activePlan, setActivePlan] = useState<Exercise[]>(workoutPlan);
   const [scheduleTitle, setScheduleTitle] = useState("Today's Workout");
   const [challengeDayLabel, setChallengeDayLabel] = useState<string | null>(null);
@@ -155,9 +152,9 @@ export default function WorkoutPage() {
         const todayAssignedId = parsed?.[todayIso];
         const assigned = todayAssignedId ? exerciseById[String(todayAssignedId)] : undefined;
         if (assigned) {
-          const warmUp = exerciseById[DAILY_WARMUP_EXERCISE_ID];
+          const warmUp = exerciseById[dailyWarmUpExerciseId];
           const customPlan: Exercise[] = [];
-          if (warmUp && assigned.id !== DAILY_WARMUP_EXERCISE_ID) {
+          if (warmUp && assigned.id !== dailyWarmUpExerciseId) {
             customPlan.push(scaleExercise(warmUp, progression.level));
           }
           customPlan.push(scaleExercise(assigned, progression.level));
@@ -183,7 +180,7 @@ export default function WorkoutPage() {
       }
 
       setScheduleTitle("Today's Workout");
-      setActivePlan(workoutPlan.map((x) => scaleExercise(x, progression.level)));
+      setActivePlan(exercises.map((x) => scaleExercise(x, progression.level)));
       setIndex(0);
       setSetCount(1);
     } catch {
@@ -192,7 +189,7 @@ export default function WorkoutPage() {
       setIndex(0);
       setSetCount(1);
     }
-  }, []);
+  }, [dailyWarmUpExerciseId, exerciseById, exercises, weeklySchedule, withDailyWarmUp]);
 
   useEffect(() => {
     loadTodayPlanAndProgression();
@@ -411,7 +408,7 @@ export default function WorkoutPage() {
           <div className="glass-card" style={{ maxWidth: 360, width: '100%' }}>
             <span className="label">Swap current exercise</span>
             <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>Pick another move from the same category.</p>
-            {workoutPlan
+            {exercises
               .filter((item) => item.id !== current.id && item.category === current.category)
               .slice(0, 4)
               .map((item) => (

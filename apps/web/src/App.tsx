@@ -5,6 +5,11 @@ import WorkoutPage from './pages/Workout';
 import TutorialsPage from './pages/Tutorials';
 import ChallengesPage from './pages/Challenges';
 import PerformanceCalendarPage from './pages/PerformanceCalendar';
+import AdminLoginPage from './pages/AdminLogin';
+import AdminExercisesPage from './pages/AdminExercises';
+import AdminSchedulePage from './pages/AdminSchedule';
+import { getSession, isAdmin } from './lib/auth';
+import { isGitHubPages } from './lib/deploy';
 
 function AppLayout() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -45,6 +50,16 @@ function AppLayout() {
           <NavLink className={({ isActive }) => `web-nav-link ${isActive ? 'active' : ''}`} to="/tutorials">
             Tutorials
           </NavLink>
+          {!isGitHubPages &&
+            (isAdmin(getSession()) ? (
+              <NavLink className={({ isActive }) => `web-nav-link ${isActive ? 'active' : ''}`} to="/admin/exercises">
+                Admin
+              </NavLink>
+            ) : (
+              <NavLink className={({ isActive }) => `web-nav-link ${isActive ? 'active' : ''}`} to="/admin/login">
+                Admin login
+              </NavLink>
+            ))}
         </nav>
       </aside>
       <main className="web-content">
@@ -63,6 +78,13 @@ export default function App() {
         <Route path="/tutorials" element={<TutorialsPage />} />
         <Route path="/challenges" element={<ChallengesPage />} />
         <Route path="/calendar" element={<PerformanceCalendarPage />} />
+        {!isGitHubPages && (
+          <>
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin/exercises" element={<AdminExercisesPage />} />
+            <Route path="/admin/schedule" element={<AdminSchedulePage />} />
+          </>
+        )}
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

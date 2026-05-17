@@ -392,6 +392,50 @@ a {
   background: #000;
 }
 
+.input,
+textarea.input {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-day-card {
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.admin-day-card.selected {
+  border-color: var(--accent);
+}
+
 .youtube-embed iframe {
   position: absolute;
   inset: 0;

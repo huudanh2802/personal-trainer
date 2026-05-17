@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { workoutPlan } from '../data/exercises';
+import { useWorkoutData } from '../context/WorkoutDataContext';
 import { youtubeWatchUrl } from '../lib/youtube';
 import { keys, getJson, setJson } from '../lib/storage';
 
@@ -9,6 +9,7 @@ function todayKey(): string {
 }
 
 export default function TutorialsPage() {
+  const { exercises: workoutPlan } = useWorkoutData();
   const [searchParams] = useSearchParams();
   const targetDate = searchParams.get('date') || todayKey();
   const [assigningId, setAssigningId] = useState('');
