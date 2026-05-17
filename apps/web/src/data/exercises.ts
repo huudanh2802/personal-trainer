@@ -288,6 +288,21 @@ export const workoutPlan: Exercise[] = [
     category: 'Upper Body',
   },
   {
+    id: '21',
+    name: 'Negative Pull-ups',
+    video: v('youtube_negative_pullup.mp4'),
+    youtubeTitle: 'How To Do a Negative Pull-Up | Exercise Guide',
+    videoCredit: 'Negative pull-up how-to · Bodybuilding.com · youtube.com/watch?v=gbPURTSxQLY',
+    videoHasSpeech: true,
+    videoLoop: true,
+    sets: 3,
+    reps: 5,
+    repGuide:
+      '1 rep = jump or step to chin-over-bar, then lower slowly for 3–5 seconds with tight core and lats engaged until arms are fully extended; release and reset.',
+    description: 'Eccentric pull-up lowers build lat and grip strength toward full pull-ups.',
+    category: 'Upper Body',
+  },
+  {
     id: '20',
     name: 'Treadmill Intervals',
     youtubeTitle: 'Beginner Treadmill Interval Technique and Pacing',
@@ -311,7 +326,7 @@ export const weeklySchedule: Record<number, { type: WorkoutDayType; exerciseIds:
   2: { type: 'cardio_intervals', exerciseIds: ['20', '3'], title: 'Tuesday: Treadmill Intervals + Incline Walk' },
   3: {
     type: 'upper_strength',
-    exerciseIds: ['19', '7', '8', '9', '10', '11', '12'],
+    exerciseIds: ['21', '19', '7', '8', '9', '10', '11', '12'],
     title: 'Wednesday: Pull-up + Upper Body Strength',
   },
   4: { type: 'active_recovery', exerciseIds: ['18'], title: 'Thursday: Active Recovery' },
