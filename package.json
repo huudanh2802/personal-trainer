@@ -14,8 +14,6 @@
     "web": "npm run dev -w @personal-trainer/web",
     "web:build": "npm run build -w @personal-trainer/web",
     "backend": "npm run dev -w @personal-trainer/backend",
-    "sync-web-videos": "mkdir -p apps/web/public/videos && cp -f apps/mobile/assets/exercises/*.mp4 apps/web/public/videos/ 2>/dev/null || true",
-    "postinstall": "npm run sync-web-videos",
     "typecheck": "npm run typecheck -w @personal-trainer/mobile && npm run typecheck -w @personal-trainer/web"
   }
 }

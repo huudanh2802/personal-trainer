@@ -21,6 +21,8 @@ coverage/
 # Web app
 apps/web/.vite/
 apps/web/.cache/
+apps/web/public/videos/
+apps/mobile/assets/exercises/*.mp4
 
 # Mobile app (Expo / React Native)
 apps/mobile/.expo/

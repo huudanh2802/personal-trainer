@@ -8,6 +8,8 @@ import {
   withDailyWarmUp,
   DAILY_WARMUP_EXERCISE_ID,
 } from '../data/exercises';
+import YouTubeEmbed from '../components/YouTubeEmbed';
+import { youtubeWatchUrl } from '../lib/youtube';
 import { keys, getJson, setJson } from '../lib/storage';
 import { challengePlans, getChallengeDayType, type ChallengeState } from '../data/challenges';
 
@@ -77,17 +79,13 @@ export default function WorkoutPage() {
   const [setCount, setSetCount] = useState(1);
   const [restOpen, setRestOpen] = useState(false);
   const [restLeft, setRestLeft] = useState(REST_SEC);
-  const [videoError, setVideoError] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [progressionLevel, setProgressionLevel] = useState(0);
   const [swapOpen, setSwapOpen] = useState(false);
   const restTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
   const current = activePlan[index] || workoutPlan[0];
 
   useEffect(() => {
-    setVideoError(false);
     setVideoReady(false);
   }, [current.id]);
 
@@ -247,7 +245,6 @@ export default function WorkoutPage() {
     next[index] = scaleExercise(replacement, progressionLevel);
     setActivePlan(next);
     setVideoReady(false);
-    setVideoError(false);
     setSwapOpen(false);
   };
 
@@ -347,49 +344,20 @@ export default function WorkoutPage() {
       </button>
 
       <div style={{ marginTop: 12, borderRadius: 20, overflow: 'hidden', background: '#000' }}>
-        {!current.video ? (
-          <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-muted)' }}>
-            <p>Tutorial title: {current.youtubeTitle}</p>
-            <p>No local video for this move.</p>
-          </div>
-        ) : !videoReady ? (
-          <button
-            type="button"
-            onClick={() => setVideoReady(true)}
-            style={{
-              width: '100%',
-              minHeight: 280,
-              background: '#111',
-              border: 'none',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              padding: 24,
-            }}
-          >
-            Tap to load exercise video (avoids loading many clips at once).
-          </button>
-        ) : videoError ? (
-          <div style={{ padding: 24, color: 'var(--text-muted)' }}>
-            Could not play this clip. Ensure the file exists under public/videos (run npm run sync-web-videos from repo
-            root).
-          </div>
-        ) : (
-          <video
-            key={current.id}
-            ref={videoRef}
-            className="tutorial"
-            controls
-            playsInline
-            loop={current.videoLoop !== false}
-            muted={!current.videoHasSpeech}
-            onError={() => setVideoError(true)}
-          >
-            <source src={current.video} type="video/mp4" />
-          </video>
-        )}
+        <YouTubeEmbed
+          videoId={current.youtubeId}
+          title={current.youtubeTitle}
+          loop={current.videoLoop}
+          active={videoReady}
+          onActivate={() => setVideoReady(true)}
+        />
       </div>
       <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8 }}>{current.videoCredit}</p>
-      <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>YouTube tutorial: {current.youtubeTitle}</p>
+      <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+        <a href={youtubeWatchUrl(current.youtubeId)} target="_blank" rel="noreferrer">
+          Open on YouTube: {current.youtubeTitle}
+        </a>
+      </p>
 
       <div className="glass-card" style={{ marginTop: 12 }}>
         <p style={{ margin: 0, lineHeight: 1.45 }}>{current.description}</p>

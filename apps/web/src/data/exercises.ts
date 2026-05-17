@@ -10,10 +10,9 @@ export type WorkoutDayType =
 export type Exercise = {
   id: string;
   name: string;
-  video?: string;
+  youtubeId: string;
   youtubeTitle: string;
   videoCredit: string;
-  videoHasSpeech: boolean;
   videoLoop: boolean;
   sets: number;
   reps: number | string;
@@ -22,16 +21,13 @@ export type Exercise = {
   category: string;
 };
 
-const v = (name: string) => `${import.meta.env.BASE_URL}videos/${name}`;
-
 export const workoutPlan: Exercise[] = [
   {
     id: '1',
     name: 'Kettlebell Swings',
-    video: v('youtube_kettlebell_swing.mp4'),
+    youtubeId: 'WM8g4Mlu5Zs',
     youtubeTitle: 'The BEST Kettlebell Swing Tutorial',
     videoCredit: 'Kettlebell swing how-to · Squat University · youtube.com/shorts/WM8g4Mlu5Zs',
-    videoHasSpeech: true,
     videoLoop: true,
     sets: 3,
     reps: 15,
@@ -43,10 +39,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '2',
     name: 'Dumbbell Goblet Squat',
-    video: v('youtube_goblet_squat.mp4'),
+    youtubeId: 'eLX_dyvooKQ',
     youtubeTitle: 'How to Perform Dumbbell Goblet Squat',
     videoCredit: 'Dumbbell goblet squat · The Strength Center · youtube.com/shorts/eLX_dyvooKQ',
-    videoHasSpeech: true,
     videoLoop: true,
     sets: 3,
     reps: 12,
@@ -58,10 +53,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '3',
     name: 'Treadmill Incline Walk',
-    video: v('youtube_treadmill_intervals.mp4'),
+    youtubeId: 'NAsObfFJXvE',
     youtubeTitle: 'Focus on the 1:1 work-to-rest ratio (1 min fast / 1 min slow)',
     videoCredit: 'Incline walk how-to (12-3-30 style) · Live Lean TV · youtube.com/watch?v=NAsObfFJXvE',
-    videoHasSpeech: true,
     videoLoop: false,
     sets: 1,
     reps: '20 mins',
@@ -73,10 +67,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '4',
     name: 'Dumbbell Reverse Lunges',
-    video: v('youtube_reverse_lunges.mp4'),
+    youtubeId: 'RZKXLMxPF_I',
     youtubeTitle: 'Dumbbell Reverse Lunges | Proper Form',
-    videoCredit: 'YouTube tutorial title: Dumbbell Reverse Lunges | Proper Form',
-    videoHasSpeech: true,
+    videoCredit: 'Dumbbell reverse lunges · youtube.com/watch?v=RZKXLMxPF_I',
     videoLoop: true,
     sets: 3,
     reps: 10,
@@ -88,10 +81,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '5',
     name: 'Plank with Shoulder Taps',
-    video: v('youtube_plank_shoulder_taps.mp4'),
+    youtubeId: 'gKA5LBy7WAI',
     youtubeTitle: 'How To Properly Do a Plank with Shoulder Taps',
-    videoCredit: 'YouTube tutorial title: How To Properly Do a Plank with Shoulder Taps',
-    videoHasSpeech: true,
+    videoCredit: 'Plank with shoulder taps · youtube.com/watch?v=gKA5LBy7WAI',
     videoLoop: true,
     sets: 3,
     reps: 20,
@@ -102,10 +94,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '6',
     name: 'Kettlebell Russian Twists',
-    video: v('youtube_russian_twist.mp4'),
+    youtubeId: 'PkGPokybYaU',
     youtubeTitle: 'How To Do A KETTLEBELL RUSSIAN TWIST',
-    videoCredit: 'YouTube tutorial title: How To Do A KETTLEBELL RUSSIAN TWIST',
-    videoHasSpeech: true,
+    videoCredit: 'Kettlebell Russian twist · youtube.com/watch?v=PkGPokybYaU',
     videoLoop: true,
     sets: 3,
     reps: 20,
@@ -117,10 +108,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '7',
     name: 'Dumbbell Overhead Press',
-    video: v('youtube_overhead_press.mp4'),
+    youtubeId: 'vlFGTI5JzjI',
     youtubeTitle: 'The PERFECT Dumbbell Shoulder Press',
-    videoCredit: 'YouTube tutorial title: The PERFECT Dumbbell Shoulder Press',
-    videoHasSpeech: true,
+    videoCredit: 'Dumbbell shoulder press · youtube.com/watch?v=vlFGTI5JzjI',
     videoLoop: true,
     sets: 3,
     reps: 10,
@@ -132,10 +122,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '8',
     name: 'Dumbbell Renegade Rows',
-    video: v('youtube_renegade_row.mp4'),
+    youtubeId: 'wTqlJ0aoJlM',
     youtubeTitle: 'Renegade Row: Core & Back Builder',
-    videoCredit: 'YouTube tutorial title: Renegade Row: Core & Back Builder',
-    videoHasSpeech: true,
+    videoCredit: 'Renegade row · youtube.com/watch?v=wTqlJ0aoJlM',
     videoLoop: true,
     sets: 3,
     reps: 8,
@@ -146,10 +135,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '9',
     name: 'Push-ups',
-    video: v('youtube_pushups.mp4'),
+    youtubeId: 'I9fsqKE5XHo',
     youtubeTitle: 'Push-ups for Beginners',
-    videoCredit: 'YouTube tutorial title: Push-ups for Beginners',
-    videoHasSpeech: true,
+    videoCredit: 'Push-ups for beginners · youtube.com/watch?v=I9fsqKE5XHo',
     videoLoop: true,
     sets: 3,
     reps: 10,
@@ -160,10 +148,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '10',
     name: 'Bicep Curls',
-    video: v('youtube_bicep_lateral.mp4'),
+    youtubeId: 'K5hFLVJnnsw',
     youtubeTitle: 'Dumbbell Bicep Curls Demonstration and Lateral Raise Tip',
-    videoCredit: 'YouTube tutorial title: Dumbbell Bicep Curls Demonstration and Lateral Raise Tip',
-    videoHasSpeech: true,
+    videoCredit: 'Bicep curls · youtube.com/watch?v=K5hFLVJnnsw',
     videoLoop: true,
     sets: 3,
     reps: 12,
@@ -174,10 +161,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '11',
     name: 'Lateral Raises',
-    video: v('youtube_bicep_lateral.mp4'),
+    youtubeId: 'K5hFLVJnnsw',
     youtubeTitle: 'Dumbbell Bicep Curls Demonstration and Lateral Raise Tip',
-    videoCredit: 'YouTube tutorial title: Dumbbell Bicep Curls Demonstration and Lateral Raise Tip',
-    videoHasSpeech: true,
+    videoCredit: 'Lateral raise segment · youtube.com/watch?v=K5hFLVJnnsw',
     videoLoop: true,
     sets: 3,
     reps: 12,
@@ -189,10 +175,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '12',
     name: 'Dumbbell Floor Press',
-    video: v('youtube_floor_press.mp4'),
+    youtubeId: 'lNdi7VEf2Ew',
     youtubeTitle: 'Dumbbell Floor Press - Exercise Tutorial',
-    videoCredit: 'YouTube tutorial title: Dumbbell Floor Press - Exercise Tutorial',
-    videoHasSpeech: true,
+    videoCredit: 'Dumbbell floor press · youtube.com/watch?v=lNdi7VEf2Ew',
     videoLoop: true,
     sets: 3,
     reps: 12,
@@ -204,10 +189,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '13',
     name: 'Dumbbell Thrusters',
-    video: v('youtube_thruster.mp4'),
+    youtubeId: 'cPzfRo_jti0',
     youtubeTitle: 'How To Properly Do A Dumbbell Thruster',
-    videoCredit: 'YouTube tutorial title: How To Properly Do A Dumbbell Thruster',
-    videoHasSpeech: true,
+    videoCredit: 'Dumbbell thruster · youtube.com/watch?v=cPzfRo_jti0',
     videoLoop: true,
     sets: 4,
     reps: 10,
@@ -219,10 +203,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '14',
     name: 'Mountain Climbers',
-    video: v('youtube_mountain_climbers.mp4'),
+    youtubeId: 'cnyTQDSE884',
     youtubeTitle: 'How to Do Mountain Climbers | The Right Way',
-    videoCredit: 'YouTube tutorial title: How to Do Mountain Climbers | The Right Way',
-    videoHasSpeech: true,
+    videoCredit: 'Mountain climbers · youtube.com/watch?v=cnyTQDSE884',
     videoLoop: true,
     sets: 4,
     reps: 30,
@@ -233,10 +216,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '15',
     name: 'Dumbbell Sumo Deadlifts',
-    video: v('youtube_sumo_deadlift.mp4'),
+    youtubeId: 'De9OUZz5W_I',
     youtubeTitle: 'Dumbbell Sumo Deadlift (Full Tutorial)',
-    videoCredit: 'YouTube tutorial title: Dumbbell Sumo Deadlift (Full Tutorial)',
-    videoHasSpeech: true,
+    videoCredit: 'Dumbbell sumo deadlift · youtube.com/watch?v=De9OUZz5W_I',
     videoLoop: true,
     sets: 4,
     reps: 12,
@@ -248,10 +230,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '17',
     name: 'Steady State Cardio',
-    video: v('youtube_zone2_cardio.mp4'),
+    youtubeId: 'Ib5ga-vL5VY',
     youtubeTitle: 'Keep a consistent "zone 2" pace where you are slightly breathless',
-    videoCredit: 'Cardio guidance: steady zone 2 pace',
-    videoHasSpeech: true,
+    videoCredit: 'Zone 2 cardio guidance · youtube.com/watch?v=Ib5ga-vL5VY',
     videoLoop: false,
     sets: 1,
     reps: '30 mins',
@@ -262,10 +243,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '18',
     name: 'Active Recovery Stretch',
-    video: v('youtube_full_body_stretch.mp4'),
+    youtubeId: 'qjKdwhEWoyM',
     youtubeTitle: 'Full Body Stretching Routine on the Mat',
-    videoCredit: 'YouTube tutorial title: Full Body Stretching Routine on the Mat',
-    videoHasSpeech: true,
+    videoCredit: 'Full-body stretch routine · youtube.com/watch?v=qjKdwhEWoyM',
     videoLoop: false,
     sets: 1,
     reps: '20 mins',
@@ -276,9 +256,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '19',
     name: 'Pull-up Bar Assisted Pull-ups',
+    youtubeId: 'gx0RWT7WbmA',
     youtubeTitle: 'Assisted Pull-Up Form for Beginners',
-    videoCredit: 'Pull-up bar assisted pull-up progression tutorial',
-    videoHasSpeech: true,
+    videoCredit: 'Assisted pull-up form · youtube.com/watch?v=gx0RWT7WbmA',
     videoLoop: true,
     sets: 4,
     reps: 6,
@@ -290,10 +270,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '21',
     name: 'Negative Pull-ups',
-    video: v('youtube_negative_pullup.mp4'),
+    youtubeId: 'gbPURTSxQLY',
     youtubeTitle: 'How To Do a Negative Pull-Up | Exercise Guide',
     videoCredit: 'Negative pull-up how-to · Bodybuilding.com · youtube.com/watch?v=gbPURTSxQLY',
-    videoHasSpeech: true,
     videoLoop: true,
     sets: 3,
     reps: 5,
@@ -305,10 +284,9 @@ export const workoutPlan: Exercise[] = [
   {
     id: '22',
     name: 'Dynamic Warm-Up',
-    video: v('youtube_dynamic_warmup.mp4'),
+    youtubeId: 'divaflydT7M',
     youtubeTitle: '5 Minute Dynamic Warm Up',
     videoCredit: 'Dynamic warm-up · TIFF x DAN · youtube.com/watch?v=divaflydT7M',
-    videoHasSpeech: false,
     videoLoop: false,
     sets: 1,
     reps: '5 mins',
@@ -320,10 +298,10 @@ export const workoutPlan: Exercise[] = [
   {
     id: '20',
     name: 'Treadmill Intervals',
+    youtubeId: 'P8fmIvqQEf4',
     youtubeTitle: 'Beginner Treadmill Interval Technique and Pacing',
-    videoCredit: 'Treadmill intervals tutorial and pacing guide',
-    videoHasSpeech: true,
-    videoLoop: true,
+    videoCredit: 'Treadmill intervals · youtube.com/watch?v=P8fmIvqQEf4',
+    videoLoop: false,
     sets: 8,
     reps: '1 min',
     repGuide:

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { workoutPlan } from '../data/exercises';
+import { youtubeWatchUrl } from '../lib/youtube';
 import { keys, getJson, setJson } from '../lib/storage';
 
 function todayKey(): string {
@@ -58,7 +59,11 @@ export default function TutorialsPage() {
               {item.sets} sets · {typeof item.reps === 'number' ? `${item.reps} reps` : item.reps}
             </p>
             <p style={{ lineHeight: 1.45 }}>{item.description}</p>
-            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>YouTube: {item.youtubeTitle}</p>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+              <a href={youtubeWatchUrl(item.youtubeId)} target="_blank" rel="noreferrer">
+                {item.youtubeTitle}
+              </a>
+            </p>
             <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.videoCredit}</p>
             <button
               type="button"

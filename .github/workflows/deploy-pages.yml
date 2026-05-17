@@ -24,9 +24,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync videos for web
-        run: npm run sync-web-videos
-
       - name: Build web app
         run: npm run web:build
 
