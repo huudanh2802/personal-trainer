@@ -317,6 +317,9 @@ export default function WorkoutPage() {
       <p style={{ color: 'var(--text-muted)', fontSize: 12, textTransform: 'uppercase', margin: '0 0 6px' }}>
         {scheduleTitle}
       </p>
+      <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '0 0 8px' }}>
+        Exercise {index + 1} of {activePlan.length}
+      </p>
       {challengeDayLabel ? (
         <p style={{ color: 'var(--success)', fontSize: 12, fontWeight: 700, margin: '0 0 8px' }}>{challengeDayLabel}</p>
       ) : null}
