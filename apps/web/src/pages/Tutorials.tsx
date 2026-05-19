@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useWorkoutData } from '../context/WorkoutDataContext';
 import { youtubeWatchUrl } from '../lib/youtube';
 import { keys, getJson, setJson } from '../lib/storage';
+import { getEffectiveDifficulty, scaleExercise } from '../lib/difficulty';
 
 function todayKey(): string {
   return new Date().toISOString().slice(0, 10);
@@ -12,6 +13,7 @@ export default function TutorialsPage() {
   const { exercises: workoutPlan } = useWorkoutData();
   const [searchParams] = useSearchParams();
   const targetDate = searchParams.get('date') || todayKey();
+  const difficultyLevel = useMemo(() => getEffectiveDifficulty(), []);
   const [assigningId, setAssigningId] = useState('');
   const title = useMemo(
     () => (searchParams.get('date') ? `Tutorials for ${targetDate}` : 'All tutorials'),
@@ -38,7 +40,9 @@ export default function TutorialsPage() {
       <p className="subtitle">Choose any tutorial and tap assign. You can reassign anytime.</p>
 
       <div className="dashboard-grid" style={{ marginTop: 14 }}>
-        {workoutPlan.map((item) => (
+        {workoutPlan.map((item) => {
+          const scaled = scaleExercise(item, difficultyLevel);
+          return (
           <div key={item.id} className="glass-card">
             <span
               style={{
@@ -57,7 +61,7 @@ export default function TutorialsPage() {
             </span>
             <h2 style={{ margin: '4px 0', fontSize: 20 }}>{item.name}</h2>
             <p style={{ color: 'var(--text-muted)', margin: '4px 0' }}>
-              {item.sets} sets · {typeof item.reps === 'number' ? `${item.reps} reps` : item.reps}
+              {scaled.sets} sets · {typeof scaled.reps === 'number' ? `${scaled.reps} reps` : scaled.reps}
             </p>
             <p style={{ lineHeight: 1.45 }}>{item.description}</p>
             <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
@@ -76,7 +80,8 @@ export default function TutorialsPage() {
               {assigningId === item.id ? 'Saving…' : `Assign to ${targetDate}`}
             </button>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

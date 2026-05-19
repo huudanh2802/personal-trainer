@@ -5,6 +5,7 @@ export const keys = {
   dailyExercisePlan: `${prefix}daily_exercise_plan`,
   progression: `${prefix}progression`,
   challengeState: `${prefix}challenge_state`,
+  todayDifficulty: `${prefix}today_difficulty`,
   caloriesHistory: `${prefix}diet_calories_history`,
   weightHistory: `${prefix}weight_history`,
 };

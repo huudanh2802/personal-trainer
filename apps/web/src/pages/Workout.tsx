@@ -6,6 +6,12 @@ import { useWorkoutData } from '../context/WorkoutDataContext';
 import YouTubeEmbed from '../components/YouTubeEmbed';
 import { youtubeWatchUrl } from '../lib/youtube';
 import { keys, getJson, setJson } from '../lib/storage';
+import {
+  BASELINE_DIFFICULTY,
+  MAX_DIFFICULTY,
+  MIN_DIFFICULTY,
+  scalePlan,
+} from '../lib/difficulty';
 import { challengePlans, getChallengeDayType, type ChallengeState } from '../data/challenges';
 
 const REST_SEC = 60;
@@ -15,6 +21,11 @@ type ProgressionState = {
   level: number;
   completedSinceLevelUp: number;
   lastWorkoutDate?: string;
+};
+
+type TodayDifficultyOverride = {
+  date: string;
+  level: number;
 };
 
 function todayKey(): string {
@@ -27,28 +38,6 @@ function daysBetween(from: Date, to: Date): number {
   a.setHours(12, 0, 0, 0);
   b.setHours(12, 0, 0, 0);
   return Math.floor((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24));
-}
-
-function scaleExercise(base: Exercise, level: number): Exercise {
-  const cappedLevel = Math.max(0, Math.min(level, 6));
-  const setsBoost = Math.floor(cappedLevel / 2);
-  let repsScaled: number | string = base.reps;
-
-  if (typeof base.reps === 'number') {
-    repsScaled = base.reps + cappedLevel * 2;
-  } else {
-    const minsMatch = /^(\d+)\s*mins$/i.exec(base.reps);
-    if (minsMatch) {
-      const mins = parseInt(minsMatch[1], 10);
-      repsScaled = `${mins + cappedLevel * 2} mins`;
-    }
-  }
-
-  return {
-    ...base,
-    sets: base.sets + setsBoost,
-    reps: repsScaled,
-  };
 }
 
 async function recordWorkoutDay(): Promise<void> {
@@ -69,6 +58,7 @@ export default function WorkoutPage() {
   const navigate = useNavigate();
   const { exerciseById, weeklySchedule, withDailyWarmUp, dailyWarmUpExerciseId, exercises } =
     useWorkoutData();
+  const [basePlan, setBasePlan] = useState<Exercise[]>(workoutPlan);
   const [activePlan, setActivePlan] = useState<Exercise[]>(workoutPlan);
   const [scheduleTitle, setScheduleTitle] = useState("Today's Workout");
   const [challengeDayLabel, setChallengeDayLabel] = useState<string | null>(null);
@@ -78,6 +68,7 @@ export default function WorkoutPage() {
   const [restLeft, setRestLeft] = useState(REST_SEC);
   const [videoReady, setVideoReady] = useState(false);
   const [progressionLevel, setProgressionLevel] = useState(0);
+  const [difficultyLevel, setDifficultyLevel] = useState(0);
   const [swapOpen, setSwapOpen] = useState(false);
   const restTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const current = activePlan[index] || workoutPlan[0];
@@ -94,6 +85,22 @@ export default function WorkoutPage() {
   );
 
   const loadTodayPlanAndProgression = useCallback(() => {
+    const applyPlan = (base: Exercise[], autoLevel: number) => {
+      const today = todayKey();
+      const override = getJson<TodayDifficultyOverride | null>(keys.todayDifficulty, null);
+      const effectiveLevel =
+        override?.date === today
+          ? Math.max(MIN_DIFFICULTY, Math.min(MAX_DIFFICULTY, override.level))
+          : autoLevel;
+
+      setBasePlan(base);
+      setProgressionLevel(autoLevel);
+      setDifficultyLevel(effectiveLevel);
+      setActivePlan(scalePlan(base, effectiveLevel));
+      setIndex(0);
+      setSetCount(1);
+    };
+
     try {
       const today = new Date();
       const todayIso = todayKey();
@@ -133,14 +140,11 @@ export default function WorkoutPage() {
           if (weekMatch) {
             const challengeExercises = withDailyWarmUp(weekMatch.exerciseIds)
               .map((id) => exerciseById[id])
-              .filter((x): x is Exercise => Boolean(x))
-              .map((x) => scaleExercise(x, progression.level));
+              .filter((x): x is Exercise => Boolean(x));
             if (challengeExercises.length > 0) {
               setChallengeDayLabel(`${plan.title} · Day ${challengeDay}/30`);
               setScheduleTitle(weekMatch.title);
-              setActivePlan(challengeExercises);
-              setIndex(0);
-              setSetCount(1);
+              applyPlan(challengeExercises, progression.level);
               return;
             }
           }
@@ -155,39 +159,30 @@ export default function WorkoutPage() {
           const warmUp = exerciseById[dailyWarmUpExerciseId];
           const customPlan: Exercise[] = [];
           if (warmUp && assigned.id !== dailyWarmUpExerciseId) {
-            customPlan.push(scaleExercise(warmUp, progression.level));
+            customPlan.push(warmUp);
           }
-          customPlan.push(scaleExercise(assigned, progression.level));
+          customPlan.push(assigned);
           setScheduleTitle('Today: Custom Assigned Exercise');
-          setActivePlan(customPlan);
-          setIndex(0);
-          setSetCount(1);
+          applyPlan(customPlan, progression.level);
           return;
         }
       }
 
       const scheduledExercises = withDailyWarmUp(dayInfo.exerciseIds)
         .map((id) => exerciseById[id])
-        .filter((x): x is Exercise => Boolean(x))
-        .map((x) => scaleExercise(x, progression.level));
+        .filter((x): x is Exercise => Boolean(x));
 
       if (scheduledExercises.length > 0) {
         setScheduleTitle(dayInfo.title);
-        setActivePlan(scheduledExercises);
-        setIndex(0);
-        setSetCount(1);
+        applyPlan(scheduledExercises, progression.level);
         return;
       }
 
       setScheduleTitle("Today's Workout");
-      setActivePlan(exercises.map((x) => scaleExercise(x, progression.level)));
-      setIndex(0);
-      setSetCount(1);
+      applyPlan(exercises, progression.level);
     } catch {
       setScheduleTitle("Today's Workout");
-      setActivePlan(workoutPlan);
-      setIndex(0);
-      setSetCount(1);
+      applyPlan(workoutPlan, 0);
     }
   }, [dailyWarmUpExerciseId, exerciseById, exercises, weeklySchedule, withDailyWarmUp]);
 
@@ -235,12 +230,25 @@ export default function WorkoutPage() {
     }
   };
 
+  const adjustDifficulty = (delta: number) => {
+    const next = Math.max(MIN_DIFFICULTY, Math.min(MAX_DIFFICULTY, difficultyLevel + delta));
+    if (next === difficultyLevel) return;
+
+    const scaled = scalePlan(basePlan, next);
+    setDifficultyLevel(next);
+    setActivePlan(scaled);
+    setJson(keys.todayDifficulty, { date: todayKey(), level: next });
+    setSetCount((count) => Math.min(count, scaled[index]?.sets ?? count));
+  };
+
   const swapExercise = (replacementId: string) => {
     const replacement = exerciseById[replacementId];
     if (!replacement) return;
-    const next = [...activePlan];
-    next[index] = scaleExercise(replacement, progressionLevel);
-    setActivePlan(next);
+    const nextBase = [...basePlan];
+    nextBase[index] = replacement;
+    const scaled = scalePlan(nextBase, difficultyLevel);
+    setBasePlan(nextBase);
+    setActivePlan(scaled);
     setVideoReady(false);
     setSwapOpen(false);
   };
@@ -329,7 +337,36 @@ export default function WorkoutPage() {
       <p style={{ color: 'var(--text-muted)', marginTop: 4 }}>
         {current.sets} sets · {repsLabel}
       </p>
-      <p style={{ color: 'var(--accent)', fontSize: 12 }}>Difficulty level: {progressionLevel}</p>
+
+      <div className="glass-card" style={{ marginTop: 12 }}>
+        <span className="label">Today&apos;s difficulty</span>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 10px' }}>
+          Auto level: {progressionLevel}. Level {BASELINE_DIFFICULTY} matches the standard plan — lower if today feels too
+          hard.
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+          <button
+            type="button"
+            className="btn-secondary"
+            style={{ marginTop: 0, width: 'auto', padding: '10px 18px' }}
+            onClick={() => adjustDifficulty(-1)}
+            disabled={difficultyLevel <= MIN_DIFFICULTY}
+          >
+            Easier
+          </button>
+          <span style={{ fontSize: 20, fontWeight: 800, minWidth: 48, textAlign: 'center' }}>{difficultyLevel}</span>
+          <button
+            type="button"
+            className="btn-secondary"
+            style={{ marginTop: 0, width: 'auto', padding: '10px 18px' }}
+            onClick={() => adjustDifficulty(1)}
+            disabled={difficultyLevel >= MAX_DIFFICULTY}
+          >
+            Harder
+          </button>
+        </div>
+      </div>
+
       {activePlan.length === 1 ? (
         <p style={{ color: 'var(--accent)', fontSize: 12 }}>Using your custom exercise assignment for today.</p>
       ) : null}
